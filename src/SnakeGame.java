@@ -11,7 +11,7 @@ import java.util.Random;
 public class SnakeGame {
     final String titleWind = "Змейка";
     final String gameTitleOver = "Игра окончена";
-    final int pointRadios = 30;
+    final int pointRadius = 30;
     final int gameHeight = 20;
     final int gameWidth = 30;
     final int gameX = 6;
@@ -26,7 +26,7 @@ public class SnakeGame {
     final int snakeRight = 39;
     final int snakeDown = 40;
     final int startDirectionSnake = snakeRight;
-    final Color snakyColor = Color.blue;
+    final Color snakyColor = Color.pink;
     final Color foodColor = new Color(247, 201, 158);
     Color backgroundCanvasColor = new Color(247, 201, 158);
     Snake snake;
@@ -35,9 +35,12 @@ public class SnakeGame {
     Canvas canvasPanel;
     Random random = new Random();
     boolean gameOver = false;
+    BufferedImage imageBuf = ImageIO.read(new File("src/png/tileset.png"));
+    Image imgFood = imageBuf.getSubimage(155,385,65,60).getScaledInstance(30,34, Image.SCALE_DEFAULT);
 
-    BufferedImage bufferedImage = ImageIO.read(new File("src/png/food.png"));
-    Image img = bufferedImage.getScaledInstance(30, 34, Image.SCALE_DEFAULT);
+    Image headSnake = imageBuf.getSubimage(0, 0, 72, 72);
+
+
 
 
     public SnakeGame() throws IOException {
@@ -54,7 +57,7 @@ public class SnakeGame {
     void Main() {
         frame = new JFrame(titleWind);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(gameWidth * pointRadios + gameX, gameHeight * pointRadios + gameY);
+        frame.setSize(gameWidth * pointRadius + gameX, gameHeight * pointRadius + gameY);
         frame.setLocation(startLoc, startLoc);
         frame.setResizable(false);
         canvasPanel = new Canvas();
@@ -123,7 +126,7 @@ public class SnakeGame {
                 g.setColor(Color.red);
                 g.setFont(new Font("Times new Roman", Font.BOLD, 50));
                 FontMetrics q1 = g.getFontMetrics();
-                g.drawString(gameTitleOver, (gameWidth * gameHeight + gameX - q1.stringWidth(gameTitleOver))/2, (gameHeight * pointRadios + gameY)/2);
+                g.drawString(gameTitleOver, (gameWidth * gameHeight + gameX - q1.stringWidth(gameTitleOver))/2, (gameHeight * pointRadius + gameY)/2);
             }
         }
     }
@@ -143,12 +146,11 @@ public class SnakeGame {
 
             return y;
         }
-
         void paint(Graphics g) {
             g.setColor(color);
-            g.fillOval(x * pointRadios, y * pointRadios, pointRadios, pointRadios);
+            g.fillOval(x * pointRadius, y * pointRadius, pointRadius, pointRadius);
             if (color == foodColor) {
-                g.drawImage(img, x * pointRadios, y * pointRadios, null);
+                g.drawImage(imgFood, x * pointRadius, y * pointRadius, null);
             }
         }
 
@@ -161,7 +163,7 @@ public class SnakeGame {
 
 
     class Snake{
-        ArrayList<Point> snake = new ArrayList<Point>();
+        public ArrayList<Point> snake = new ArrayList<Point>();
         int direction;
         int snakeScore = snake.size();
         public Snake(int x, int y, int length, int direction) {
@@ -172,19 +174,20 @@ public class SnakeGame {
             this.direction = direction;
         }
         boolean isInsideSnake(int x, int y){
-            for(Point point :  snake){
+            for(Point point : snake){
                 if((point.getX() == x) && (point.getY() == y)) {
                     return true;
                 }
             }
             return false;
         }
-
         void paint(Graphics p) {
             p.setFont(new Font("Times new Roman", Font.BOLD, 50));
-            p.drawString(String.valueOf(snakeScore), 10, 45);
+            p.drawString(String.valueOf(snakeScore), (gameWidth * pointRadius + gameX)/2, 45);
+
             for (Point point : snake) {
                 point.paint(p);
+
             }
         }
 
@@ -244,5 +247,4 @@ public class SnakeGame {
             }
         }
     }
-
 }
